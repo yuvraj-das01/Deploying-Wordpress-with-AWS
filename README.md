@@ -22,9 +22,11 @@ pip3 install boto3
 Make Sure you should have account on AWS Cloud.
 PRACTICAL:-
 Let’s start running the commands & writing the codes…
+
 STEP-1:- Create one workspace or folder inside your Controller Node using this command:-
 mkdir /task18
 Now all the Files and Roles we will create inside this workspace.
+
 STEP-2:- Inside this workspace, create one folder named as “/roles” , and inside this folder run following commands. This commands will create the Ansible Roles inside this directory-
 cd /task18
 mkdir /roles
@@ -33,6 +35,7 @@ ansible-galaxy init ec2-instance
 ansible-galaxy init wordpress
 ansible-galaxy init rds
 I have Created three Ansible Roles. One for Launching AWS EC2-instance, Second for Configuring Wordpress over Instance and third one is for Creating the RDS (DataBase).
+
 STEP-3:- Go to EC2->KEY-PAIRS service and create one new Key Pair with whatever the name you wanna give let’s say- “task19.pem” download it and put it on our workspace. And run this command:-
 chmod 400 task19.pem
 
@@ -47,6 +50,7 @@ vim ansible.cfg
 
 Here some common key-word you can see like “host_key_checking”, “roles_path”, “ask_pass”, etc. You should be familiar with this all common keywords as I already mentioned in Pre-Requisite.
 Here is the “private_key_file” keyword is used for aws key pair. When Ansible gonna login to AWS instances to setup K8s via SSH, then it needs the private key file. Also the default remote user of EC2 Instance is “ec2-user”.
+
 STEP-6:- Create one vault file of Ansible, where we gonna put all our user credentials like “access_key” and “secret_key”, that ansible use while login. Command:-
 ansible-vault create cred.yml
 It will ask you to create password, create it and put the credential like that:-
@@ -67,11 +71,9 @@ Here I used “debug” module of ansible, just for printing the value of the va
 At last have used “wait_for” module, it stops the program till the Public DNS name of the Slave Instance will not come. As we know that the Instance Launching takes some time, that’s why I used this module. It will wait till the SSH comes up.
 “cd /task18/roles/ec2-instance/vars”
 vim main.yml
-
-
 The value of this variable you will find in AWS Cloud Console.
-STEP-8:- Go to “/role/wordpress/tasks” and start editing the “main.yml” file. Here we gonna put all the code for configuration of “Wordpress”, code:-
 
+STEP-8:- Go to “/role/wordpress/tasks” and start editing the “main.yml” file. Here we gonna put all the code for configuration of “Wordpress”, code:-
 
 Here I have used “package” module of ansible, to install the Dependencies of Wordpress (mysql and httpd webserver).
 Next we have to put wordpress files over the Apache Default directory (/var/www/html). Either we can download the particular file using “get_url” module of ansible over the directory. But here I’m using “unarchive” module of ansible, which first copy the file from Managed Node to the Target Node and then Untar it. The file present inside the “/wordpress/files” directory.
@@ -79,8 +81,8 @@ Next for working with this wordpress version, we need Php 7.4 version in particu
 Using “package” module, I have installed all the Php software’s that require for working of wordpress.
 Next using “service” module, starting the webserver service.
 ALL ROLES AND FILES, YOU WILL FIND IN MY GIT HUB REPO. LINK IS PRESENT AT LAST OF THIS BLOG.
-STEP-9:- Go to “/roles/rds/tasks” and start editing the “main.yml”. Here we gonna the code for creating the RDS. Code:-
 
+STEP-9:- Go to “/roles/rds/tasks” and start editing the “main.yml”. Here we gonna the code for creating the RDS. Code:-
 
 Here I have used many variables, values of this variables are present inside “/rds/vars/main.yml” file.
 Using “rds” module of Ansible, I have created the RDS Data Base. Here I’m using MySQL Database as my Engine name. I assume that from rest of the Key-words you are already familiar, as I already mentioned in Pre-requisite.
@@ -100,15 +102,15 @@ If your Roles don’t have any error and all the Steps you configured properly, 
 
 
 Finally our playbook has run successfully, you can go inside the AWS Cloud and see the instance and RDS has launched or not. let’s go:-
+
 STEP-12:- Here you can see that EC2-INSTANCE has launched and one RDS Database has created successfully:-
-
-
 
 
 STEP-13:- Let’s go inside the wordpress instance, to see whether the wordpress is configured successfully or not:-
 
 
 Here we can see that all this are configured successfully.
+
 STEP-14:- Now using the Public Ip of the instance over the browser, we can see the wordpress site. URL:-
 http://<PUBLIC_IP>/wordpress
 First, you have to provide the credentials of Database that you wanna use. So put the DATABASE NAME, USERNAME, PASSWORD that we created inside the RDS configuration file. This credentials:-
